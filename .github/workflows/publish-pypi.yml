@@ -28,7 +28,7 @@ jobs:
       - name: Build sdist and wheel
         run: python -m build
       - name: Upload distribution artifacts
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: python-package-distributions
           path: dist/
@@ -45,7 +45,7 @@ jobs:
   #     id-token: write  # for OIDC
   #   steps:
   #     - name: Download distribution artifacts
-  #       uses: actions/download-artifact@v6
+  #       uses: actions/download-artifact@v8
   #       with:
   #         name: python-package-distributions
   #         path: dist/
@@ -63,7 +63,7 @@ jobs:
       id-token: write
     steps:
       - name: Download distribution artifacts
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           name: python-package-distributions
           path: dist/
@@ -84,7 +84,7 @@ jobs:
       upload-url: ${{ steps.create-draft.outputs.upload_url }}
     steps:
       - name: Download distribution artifacts
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           name: python-package-distributions
           path: dist/
@@ -117,7 +117,7 @@ jobs:
       contents: write
     steps:
       - name: Publish draft as release
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             await github.rest.repos.updateRelease({
