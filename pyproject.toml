@@ -58,4 +58,4 @@ build = [
 
 [tool.uv.build-backend]
 module-root = ""
-module-name = "oggmciworkflow"
+module-name = "oggm-ci-workflow"
