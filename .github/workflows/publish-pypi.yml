@@ -2,8 +2,6 @@ name: Publish to PyPI
 
 on:
   push:
-    branches:
-      - main
     tags:
       - 'v*'
 
@@ -60,7 +58,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     environment:
-      name: testpypi
+      name: pypi-release
       url: https://test.pypi.org/p/oggm-ci-workflow
     permissions:
       id-token: write
