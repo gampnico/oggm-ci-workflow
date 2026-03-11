@@ -77,6 +77,9 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/v')
     needs: build
     runs-on: ubuntu-latest
+    environment:
+      name: release
+      url: ${{ format('https://github.com/{0}/releases/tag/{1}', github.repository, github.ref_name) }}
     permissions:
       contents: write  # required to create/edit releases
     outputs:
@@ -93,30 +96,30 @@ jobs:
         run: echo "version=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
       - name: Create draft release
         id: create-draft
-        run: gh release create ${{ steps.version.outputs.version }} --target main --verify-tag --draft --generate-notes --title "${{ steps.version.outputs.version }}" --notes "A new minor release of the OGGM with several improvements and bug fixes. See [What's New](https://docs.oggm.org/en/latest/whats-new.html) in the documentation for more information." --repo ${{ github.repository }} ./dist/*
+        run: gh release create ${{ steps.version.outputs.version }} --target main --verify-tag --generate-notes --title "${{ steps.version.outputs.version }}" --notes "A new minor release of the OGGM with several improvements and bug fixes. See [What's New](https://docs.oggm.org/en/latest/whats-new.html) in the documentation for more information." --repo ${{ github.repository }} ./dist/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Output release ID
         run: 'echo "Created release ID: ${{ steps.create-draft.outputs.id }}"'
 
-  publish-release:
-    name: Publish GitHub Release
-    if: startsWith(github.ref, 'refs/tags/v')
-    needs: draft-release
-    runs-on: ubuntu-latest
-    environment:
-      name: release
-      url: ${{ format('https://github.com/{0}/releases/tag/{1}', github.repository, github.ref_name) }}
-    permissions:
-      contents: write
-    steps:
-      - name: Publish draft as release
-        uses: actions/github-script@v8
-        with:
-          script: |
-            await github.rest.repos.updateRelease({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              release_id: "${{ needs.draft-release.outputs.release-id }}",
-              draft: false,
-            });
+  # publish-release:
+  #   name: Publish GitHub Release
+  #   if: startsWith(github.ref, 'refs/tags/v')
+  #   needs: draft-release
+  #   runs-on: ubuntu-latest
+  #   environment:
+  #     name: release
+  #     url: ${{ format('https://github.com/{0}/releases/tag/{1}', github.repository, github.ref_name) }}
+  #   permissions:
+  #     contents: write
+  #   steps:
+  #     - name: Publish draft as release
+  #       uses: actions/github-script@v8
+  #       with:
+  #         script: |
+  #           await github.rest.repos.updateRelease({
+  #             owner: context.repo.owner,
+  #             repo: context.repo.repo,
+  #             release_id: "${{ needs.draft-release.outputs.release-id }}",
+  #             draft: false,
+  #           });
